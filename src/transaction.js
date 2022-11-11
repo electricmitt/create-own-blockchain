@@ -12,7 +12,7 @@ export default class Transaction {
 
     // Calculate the hash in order to do the signature. This is needed because the hash value will be signed
     calculateHash() {
-
+        return SHA256(this.fromAddress + this.toAddress + this.amount);
     }
 
     // Incoming Key
@@ -24,5 +24,15 @@ export default class Transaction {
         if (signingKey.getPublic('hex') !== this.fromAddress) {
             throw new Error('You cannot sign transactions for other wallets!');
         }
+
+        // Sign the transaction hash with the Private Key
+        this.hash = this.calculateHash();
+
+        const sign = signingKey.sign(this.hash, 'base64');
+
+        // Convert the signature to the DER format.
+        this.signature = sign.toDER('hex');
+        
+        console.log("signature: " + this.signature);
     }
 }
