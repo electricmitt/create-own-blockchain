@@ -12,7 +12,18 @@ export default class Block {
     }
 
     calculateHash(){
-        return SHA256(this.timestamp + JSON.stringify(this.transactions) + this.previousHash + this.nonce);
+        return SHA256(this.timestamp + JSON.stringify(this.transactions) + this.previousHash + this.nonce).toString();
+    }
+
+    hasValidTransactions() {
+        // Traverse all transactions within the block, verifying them one by one
+        for (const tx of this.transactions) {
+            // check if this field is valid
+            if (tx.isValid()) {
+                return false
+            }
+        }
+        return true;
     }
 
 }
