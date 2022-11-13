@@ -8,7 +8,7 @@ export default class Block {
         this.transactions = transactions; // transactions/data within the blockchain, transferring some coins
         this.previousHash = previousHash; // every block is changed together
         this.nonce = 0;
-        this.hash = '';
+        this.hash = this.calculateHash();
     }
 
     calculateHash(){
@@ -24,6 +24,10 @@ export default class Block {
             }
         }
         return true;
+    }
+
+    mineBlock(difficulty) {
+        // create a hash until we met the hash criteria
     }
 
 }
