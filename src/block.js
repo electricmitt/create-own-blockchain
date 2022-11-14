@@ -28,6 +28,9 @@ export default class Block {
 
     mineBlock(difficulty) {
         // create a hash until we met the hash criteria
+        while (this.hash.substring(0, difficulty)) {
+
+        }
     }
 
 }
