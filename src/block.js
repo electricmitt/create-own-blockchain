@@ -28,9 +28,12 @@ export default class Block {
 
     mineBlock(difficulty) {
         // create a hash until we met the hash criteria
-        while (this.hash.substring(0, difficulty)) {
-
+        while (this.hash.substring(0, difficulty) !== Array(difficulty + 1).join("0")) {
+            this.nonce++;
+            this.hash = this.calculateHash();
         }
+
+        console.log("Block mined, nonce: " + this.nonce + ", hash: " + this.hash)
     }
 
 }
