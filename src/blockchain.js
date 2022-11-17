@@ -23,5 +23,11 @@ export default class BlockChain {
             throw new Error('Transaction must include from and to address');
         }
         // Verify that the transaction is valid and valid before it can be submitted to the trading pool.
+        if (!transaction.isValid()) {
+            throw new Error('Cannot add invalid transaction to the chain');
+        }
+        // Add tx to the mempool
     }
+
+    
 }
