@@ -29,5 +29,13 @@ export default class BlockChain {
         // Add tx to the mempool
     }
 
-    
+    minePendingTransactions(miningRewardAddress) {
+        // Package all pending transactions together in the same block
+
+        // Mining, that is, constatly trying nonce to make the hash Vluw meet the requirements
+
+        // Put the miner fee transactions into pendingTransactions for the next processing operation. The miner fee transaction is
+    }
+
+
 }
