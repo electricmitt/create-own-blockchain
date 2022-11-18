@@ -37,5 +37,19 @@ export default class BlockChain {
         // Put the miner fee transactions into pendingTransactions for the next processing operation. The miner fee transaction is
     }
 
+    getBalanceOfAddress(address) {
+        // iterate over the chain, block by block
+        // tx by tx, checking for from and to address
+        let balance = 0;
+        for (const block of this.chain) {
+            for (const transaction of block.transactions) {
+                // check if address sent tokens in this tx
+
+                // check if address received token in this tx
+            }
+        }
+        return balance
+    }
+
 
 }
