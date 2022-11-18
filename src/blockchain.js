@@ -48,7 +48,7 @@ export default class BlockChain {
                 // check if address received token in this tx
             }
         }
-        return balance
+        return balance 
     }
 
 
