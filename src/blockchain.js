@@ -51,5 +51,9 @@ export default class BlockChain {
         return balance 
     }
 
+    isChainValid() {
+        
+    }
+
 
 }
