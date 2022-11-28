@@ -82,27 +82,16 @@ export default class BlockChain {
             }
 
             // Check if current block hash is valid.
-            if (currentBlock)
+            if (currentBlock.hash !== currentBlock.calculateHash()) {
+                console.error("hash not equal: " + JSON.stringify(currentBlock));
+                return false;
+            }
 
             // Check block previous hash is valid.
+            if (currentBlock.previousBlock !== previousBlock.calculateHash()) {
+                console.error("previous hash not right: " + JSON.stringify(currentBlock));
+                return false;
+            }
         }
     }
-
-    isValid() {
-        // The miner transaction is valid
-        if (this.fromAddress === null) return true;
-
-        // Verify if the source account is the person's address, or more specifically, verify whether the source address
-        if (signingKey.getPublic('hex') !== this.fromAddress) {
-            throw new Error('You cannot sign transactions for other wallets!')
-        }
-
-        // Transcode fromAddress to get the public key (this process is reversible, as it is just format conversion process.)
-
-        // Use the public key to verify if the signature is correct, or more specifically if the transaction was actually initiated
-
-        console.log("signature: " + this.signature);
-    }
-
-
 }

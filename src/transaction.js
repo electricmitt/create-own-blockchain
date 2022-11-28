@@ -32,7 +32,25 @@ export default class Transaction {
 
         // Convert the signature to the DER format.
         this.signature = sign.toDER('hex');
-        
+
         console.log("signature: " + this.signature);
+    }
+
+    isValid() {
+        // The miner transaction is valid
+        if (this.fromAddress === null) return true;
+
+        // Verify if the source account is the person's address, or more specifically, verify whether the source address
+        if (signingKey.getPublic('hex') !== this.fromAddress) {
+            throw new Error('You cannot sign transactions for other wallets!')
+        }
+
+        // Transcode fromAddress to get the public key (this process is reversible, as it is just format conversion process.)
+        const publicKey = ec.keyFromPublic(this.fromAddress, 'hex');
+
+        // Use the public key to verify if the signature is correct, or more specifically if the transaction was actually initiated
+        console.log("signature: " + this.signature);
+
+        return publicKey.verify(this.calculateHash(), this.signature);
     }
 }
