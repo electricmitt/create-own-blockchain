@@ -1,4 +1,3 @@
-'use strict';
 const EC = require('elliptic').ec;
 const ec = new EC('secp256k1');
 
@@ -10,12 +9,12 @@ const privateKey = key.getPrivate('hex');
 // Prints keys to the console
 console.log();
 console.log(
-  'Your public key (also your wallet address, freely shareable)\n',
+  'Here is your public key \n',
   publicKey
 );
 
 console.log();
 console.log(
-  'Your private key (keep this secret! To sign transactions)\n',
+  'Here is your private key \n',
   privateKey
 );

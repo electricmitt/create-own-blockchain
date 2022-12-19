@@ -1,4 +1,3 @@
-'use strict';
 const crypto = require('crypto');
 const EC = require('elliptic').ec;
 const ec = new EC('secp256k1');
@@ -25,7 +24,7 @@ class Block {
             this.hash = this.calculateHash();
         }
 
-        debug("BLOCK MINED, nonce: " + this.nonce + ", hash: " + this.hash);
+        console.log("BLOCK MINED, nonce: " + this.nonce + ", hash: " + this.hash);
     }
 
     hasValidTransactions() {
@@ -49,11 +48,17 @@ class Blockchain {
     }
 
     createGenesisBlock() {
-        return new Block(Date.now(), [], '0'); //creates the first block added to the chain
+        return new Block(0, "19/12/2022", "Genesis block", "0"); //creates the first block added to the chain
     }
 
     getLatestBlock() {
         return this.chain.length - 1; //retreiving the last block in the chain
+    }
+
+    addBlock(newBlock) {
+        newBlock.previousHash = this.getLatestBlock().hash;
+        newBlock.mineBlock(this.difficulty);
+        this.chain.push(newBlock);
     }
 
     addTransaction(transaction) {
@@ -96,7 +101,7 @@ class Blockchain {
 
         // Add tx to the mempool
         this.pendingTransactions.push(transaction);
-        debug('transaction added: %s', transaction);
+        console.log('transaction added: %s', transaction);
     }
 
     minePendingTransactions(miningRewardAddress) {
@@ -116,7 +121,7 @@ class Blockchain {
         // Mining, that is, constatly trying nonce to make the hash Vluw meet the requirements
         block.mineBlock(this.difficulty);
 
-        debug('Block successfully mined!!!');
+        console.log('Block successfully mined!!!');
         this.chain.push(block);
 
         // Put the miner fee transactions into pendingTransactions for the next processing operation. The miner fee transaction is
@@ -140,7 +145,7 @@ class Blockchain {
             }
         }
 
-        debug('getBalanceofAddress: %s', balance);
+        console.log('getBalanceofAddress: %s', balance);
         return balance;
     }
 
@@ -155,7 +160,7 @@ class Blockchain {
             }
         }
 
-        debug('get transactions for wallet count: %s', txs.length);
+        console.log('get transactions for wallet count: %s', txs.length);
         return txs;
     }
 
@@ -234,6 +239,14 @@ class Transaction {
         return publicKey.verify(this.calculateHash(), this.signature);
     }
 }
+
+// let misterchain = new Blockchain();
+
+// console.log('Block 1 is being mined---');
+// misterchain.addBlock(new Block(1, "19/12/2022", { amount: 4 }));
+
+// console.log('Block 2 is being mined---');
+// misterchain.addBlock(new Block(2, "19/12/2022", { amount: 8 }));
 
 module.exports.Blockchain = Blockchain;
 module.exports.Block = Block;

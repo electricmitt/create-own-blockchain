@@ -1,10 +1,9 @@
-'use strict';
 const {Blockchain, Transaction} = require('./blockchain');
 const EC = require('elliptic').ec;
 const ec = new EC('secp256k1');
 
 const personalKey = ec.keyFromPrivate(
-    '4aad79fc342263689ed87256ced8e22383ecf6a525eba32d770651703750d8a7'
+    '145c34aae1ccadacecf6305ee422173c64aebee55ca94a46c63efc7e5a5a5c5b'
 );
 
 const personalWalletAddress = personalKey.getPublic('hex');
@@ -16,7 +15,7 @@ misterChain.minePendingTransactions(personalWalletAddress);
 
 // This creates a transaction and signs it with our key
 const tx1 = new Transaction(personalWalletAddress,
-     '0432376afea9261b1bc59eaa9cba7742179d47af78bbf3cb54cf42914d79f0bab06a21303ef134187a74176d91a4aa5619f17997a57d0a361722e20a60c28dea74',
+     '047d6e901dd689ea6928ec04a60974b3c086fb481de8f8c095019dd72eaad56115cb7646da8f88f88b9cc14d7e57eb9646c739f987af61d818e80bb617a8b32ab1',
       100);
 tx1.signTransaction(personalKey);
 misterChain.addTransaction(tx1);
@@ -42,4 +41,4 @@ console.log(
 
 // Checks if the chain is valid
 console.log();
-console.log('is the Blockchain valid?', misterChain.isChainValid() ? 'Yep' : 'Nope');
+console.log('is the Blockchain valid?', misterChain.isChainValid());
