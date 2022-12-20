@@ -15,7 +15,7 @@ const myWalletAddress = myKey.getPublic('hex');
 
 const nodeAddress = uuidv1().split('-').join('');
 
-const kevcoin = new Blockchain();
+const misterchain = new Blockchain();
 
 // parses data to give access to it via the routes
 app.use(bodyParser.json());
@@ -23,23 +23,23 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // sends back the blockchain
 app.get('/blockchain', function (req, res) {
-    res.send(kevcoin);
+    res.send(misterchain);
 })
 
 //end point to create new transaction on the blockchain
 app.post('/transaction', function (req, res) {
     const newTransaction = req.body;
-    const blockIndex = kevcoin.addTransactionToPendingTransactions(newTransaction);
+    const blockIndex = misterchain.addTransactionToPendingTransactions(newTransaction);
     res.json({ note: `Transaction will be added in block ${blockIndex}.` });
 })
 
 // create and broadcast new transaction to all other nodes on the network
 app.post('/transaction/broadcast', function(req, res) {
     const newTransaction = kevcoin.createNewTransaction(req.body.amount, req.body.sender, req.body.recipient)
-    kevcoin.addTransactionToPendingTransactions(newTransaction);
+    misterchain.addTransactionToPendingTransactions(newTransaction);
 
     const requestPromises = [];
-    kevcoin.networkNodes.forEach(networkNodeUrl => {
+    misterchain.networkNodes.forEach(networkNodeUrl => {
         const requestOptions = {
             uri: networkNodeUrl + '/transaction',
             method: 'POST',
@@ -61,25 +61,25 @@ app.post('/transaction/broadcast', function(req, res) {
 //Performs calculations to create new block
 //////////////////////////////////////////////
 app.get('/mine', function (req, res) {
-    const lastBlock = kevcoin.getLastBlock();
+    const lastBlock = misterchain.getLastBlock();
     const previousBlockHash = lastBlock['hash'];
     const currentBlockData = {
-        transactions: kevcoin.pendingTransactions,
+        transactions: misterchain.pendingTransactions,
         index: lastBlock['index'] + 1
     };
 
-    const nonce = kevcoin.proofOfWork(previousBlockHash, currentBlockData);
-    const blockHash = kevcoin.hashBlock(previousBlockHash, currentBlockData, nonce);
-    const newBlock = kevcoin.createNewBlock(nonce, previousBlockHash, blockHash);
+    const nonce = misterchain.proofOfWork(previousBlockHash, currentBlockData);
+    const blockHash = misterchain.hashBlock(previousBlockHash, currentBlockData, nonce);
+    const newBlock = misterchain.createNewBlock(nonce, previousBlockHash, blockHash);
 ///////////////////////////////////////
 
-    //kevcoin.createNewTransaction(12.5, "00", nodeAddress); // Show mining reward
+    //misterchain.createNewTransaction(12.5, "00", nodeAddress); // Show mining reward
 
     
     // Broadcast out to all networks
     ////////////////////////////////////
     const requestPromises = [];
-    kevcoin.networkNodes.forEach(networkNodeUrl => {
+    misterchain.networkNodes.forEach(networkNodeUrl => {
         const requestOptions = {
             uri: networkNodeUrl + '/receive-new-block',
             method: 'POST',
@@ -97,7 +97,7 @@ app.get('/mine', function (req, res) {
     Promise.all(requestPromises)
     .then(data => {
         const requestOptions = {
-            uri: kevcoin.currentNodeUrl + '/transaction/broadcast',
+            uri: misterchain.currentNodeUrl + '/transaction/broadcast',
             method: 'POST',
             body: {
                 amount: 12.5,
@@ -124,13 +124,13 @@ app.get('/mine', function (req, res) {
 
 app.post('/receive-new-block', function(req, res) {
     const newBlock = req.body.newBlock;
-    const lastBlock = kevcoin.getLastBlock();
+    const lastBlock = misterchain.getLastBlock();
     const correctHash = lastBlock.hash === newBlock.previousBlockHash; //cehck to see if the hashes match
     const correctIndex = lastBlock['index'] + 1 == newBlock['index']; // check to make sure the last block has the correct index which should be 1 above the last block
 
     if (correctHash && correctIndex) {
-        kevcoin.chain.push(newBlock);
-        kevcoin.pendingTransactions = []; //clear out the transactions
+        misterchain.chain.push(newBlock);
+        misterchain.pendingTransactions = []; //clear out the transactions
         res.json({
             note: 'New block received and accepted.',
             newBlock: newBlock
@@ -158,12 +158,12 @@ app.post('/receive-new-block', function(req, res) {
 app.post('/register-and-broadcast-node', function(req, res) {
     const newNodeUrl = req.body.newNodeUrl;
     // add newNodeUrl to networkNodes array if it is not already present
-    if (kevcoin.networkNodes.indexOf(newNodeUrl) == -1) kevcoin.networkNodes.push(newNodeUrl);
+    if (misterchain.networkNodes.indexOf(newNodeUrl) == -1) misterchain.networkNodes.push(newNodeUrl);
 
     // Since it is unknown how long it will take to get these requests back, they will be stored in
     // the regNodesPromises array.
     const regNodesPromises = [];
-    kevcoin.networkNodes.forEach(networkNodeUrl => {
+    misterchain.networkNodes.forEach(networkNodeUrl => {
         const requestOptions = {
             uri: networkNodeUrl + '/register-node',
             method: 'POST',
@@ -180,7 +180,7 @@ app.post('/register-and-broadcast-node', function(req, res) {
         const bulkRegisterOptions = {
             uri: newNodeUrl + '/register-nodes-bulk',
             method: 'POST',
-            body: { allNetworkNodes: [ ...kevcoin.networkNodes, kevcoin.currentNodeUrl ] },
+            body: { allNetworkNodes: [ ...misterchain.networkNodes, misterchain.currentNodeUrl ] },
             json: true
         };
 
@@ -195,9 +195,9 @@ app.post('/register-and-broadcast-node', function(req, res) {
 // simply a way for the other nodes to recognize the other nodes
 app.post('/register-node', function(req, res) {
     const newNodeUrl = req.body.newNodeUrl;
-    const nodeNotAlreadyPresent = kevcoin.networkNodes.indexOf(newNodeUrl) == -1;
-    const notCurrentNode = kevcoin.currentNodeUrl !== newNodeUrl;
-    if (nodeNotAlreadyPresent && notCurrentNode) kevcoin.networkNodes.push(newNodeUrl);
+    const nodeNotAlreadyPresent = misterchain.networkNodes.indexOf(newNodeUrl) == -1;
+    const notCurrentNode = misterchain.currentNodeUrl !== newNodeUrl;
+    if (nodeNotAlreadyPresent && notCurrentNode) misterchain.networkNodes.push(newNodeUrl);
     res.json({ note: 'New node registered successfully.' });
 });
 
@@ -206,9 +206,9 @@ app.post('/register-node', function(req, res) {
 app.post('/register-nodes-bulk', function(req, res) {
     const allNetworkNodes = req.body.allNetworkNodes;
     allNetworkNodes.forEach(networkNodeUrl => {
-        const nodeNotAlreadyPresent = kevcoin.networkNodes.indexOf(networkNodeUrl) == -1;
-        const notCurrentNode = kevcoin.currentNodeUrl !== networkNodeUrl;
-        if (nodeNotAlreadyPresent && notCurrentNode) kevcoin.networkNodes.push(networkNodeUrl);
+        const nodeNotAlreadyPresent = misterchain.networkNodes.indexOf(networkNodeUrl) == -1;
+        const notCurrentNode = misterchain.currentNodeUrl !== networkNodeUrl;
+        if (nodeNotAlreadyPresent && notCurrentNode) misterchain.networkNodes.push(networkNodeUrl);
     });
 
     res.json({ note: 'Bulk registration successful.' });
@@ -217,7 +217,7 @@ app.post('/register-nodes-bulk', function(req, res) {
 // CONSENSUS //////////////////
 app.get('/consensus', function(req, res) {
     const requestPromises = [];
-    kevcoin.networkNodes.forEach(networkNodeUrl => {
+    misterchain.networkNodes.forEach(networkNodeUrl => {
         const requestOptions = {
             uri: networkNodeUrl + '/blockchain',
             method: 'GET', 
@@ -229,7 +229,7 @@ app.get('/consensus', function(req, res) {
 
     Promise.all(requestPromises)
     .then(blockchains => {
-        const currentChainLength = kevcoin.chain.length;
+        const currentChainLength = misterchain.chain.length;
         let maxChainLength = currentChainLength;
         let newLongestChain = null;
         let newPendingTransactions = null;
@@ -242,18 +242,18 @@ app.get('/consensus', function(req, res) {
             };
         });
 
-        if (!newLongestChain || (newLongestChain && !kevcoin.chainIsValid(newLongestChain))) {
+        if (!newLongestChain || (newLongestChain && !misterchain.chainIsValid(newLongestChain))) {
             res.json({
                 note: 'Current chain has not been replaced.',
-                chain: kevcoin.chain
+                chain: misterchain.chain
             });
         }
-        else if (newLongestChain && kevcoin.chainIsValid(newLongestChain)) {
-            kevcoin.chain = newLongestChain;
-            kevcoin.pendingTransactions = newPendingTransactions;
+        else if (newLongestChain && misterchain.chainIsValid(newLongestChain)) {
+            misterchain.chain = newLongestChain;
+            misterchain.pendingTransactions = newPendingTransactions;
             res.json({
                 note: 'This chain has been replaced.',
-                chain: kevcoin.chain
+                chain: misterchain.chain
             });
         }
     });
@@ -262,7 +262,7 @@ app.get('/consensus', function(req, res) {
 
 app.get('/block/:blockHash', function(req, res) {
     const blockHash = req.params.blockHash;
-    const correctBlock = kevcoin.getBlock(blockHash);
+    const correctBlock = misterchain.getBlock(blockHash);
     res.json({
         block: correctBlock
     });
@@ -270,7 +270,7 @@ app.get('/block/:blockHash', function(req, res) {
 
 app.get('/transaction/:transactionId', function(req, res) {
     const transactionId = req.params.transactionId;
-    const transactionData = kevcoin.getTransaction(transactionId);
+    const transactionData = misterchain.getTransaction(transactionId);
 
     res.json({
         transaction: transactionData.transaction,
@@ -280,7 +280,7 @@ app.get('/transaction/:transactionId', function(req, res) {
 
 app.get('/address/:address', function(req, res) {
     const address = req.params.address;
-    const addressData = kevcoin.getAddressData(address);
+    const addressData = misterchain.getAddressData(address);
     res.json({
         addressData: addressData
     });
