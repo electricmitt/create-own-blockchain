@@ -3,7 +3,7 @@ const EC = require('elliptic').ec;
 const ec = new EC('secp256k1');
 
 const personalKey = ec.keyFromPrivate(
-    '145c34aae1ccadacecf6305ee422173c64aebee55ca94a46c63efc7e5a5a5c5b'
+    ' b96869e96eea7f882983022cf77b9c908d76662f2fe7cdc4fe5d5146edf3057e'
 );
 
 const personalWalletAddress = personalKey.getPublic('hex');
@@ -15,7 +15,7 @@ misterChain.minePendingTransactions(personalWalletAddress);
 
 // This creates a transaction and signs it with our key
 const tx1 = new Transaction(personalWalletAddress,
-     '047d6e901dd689ea6928ec04a60974b3c086fb481de8f8c095019dd72eaad56115cb7646da8f88f88b9cc14d7e57eb9646c739f987af61d818e80bb617a8b32ab1',
+     ' 049628da01f64517db2835eda0e8f38b2f23be358ef9c7de8cc6180e0340f874490959eb1aa43fd930ae78b27a53ad10ce5d632d751fe8ec527b2f3d9c281636f3',
       100);
 tx1.signTransaction(personalKey);
 misterChain.addTransaction(tx1);

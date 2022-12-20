@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const EC = require('elliptic').ec;
 const ec = new EC('secp256k1');
-const debug = require('debug')('misterChain:blockchain');
+
 
 
 class Block {
@@ -23,7 +23,6 @@ class Block {
             this.nonce++;
             this.hash = this.calculateHash();
         }
-
         console.log("BLOCK MINED, nonce: " + this.nonce + ", hash: " + this.hash);
     }
 
