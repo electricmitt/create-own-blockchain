@@ -3,7 +3,7 @@ const EC = require('elliptic').ec;
 const ec = new EC('secp256k1');
 
 const personalKey = ec.keyFromPrivate(
-    ' b96869e96eea7f882983022cf77b9c908d76662f2fe7cdc4fe5d5146edf3057e'
+    'b96869e96eea7f882983022cf77b9c908d76662f2fe7cdc4fe5d5146edf3057e'
 );
 
 const personalWalletAddress = personalKey.getPublic('hex');

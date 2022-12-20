@@ -10,7 +10,7 @@ const EC = require('elliptic').ec;
 const ec = new EC('secp256k1');
 
 
-const myKey = ec.keyFromPrivate('970eb829cb4b7d48f54d6edab6cd7666ad085ac6fb7fed420442b2031e533aa2');
+const myKey = ec.keyFromPrivate('b96869e96eea7f882983022cf77b9c908d76662f2fe7cdc4fe5d5146edf3057e');
 const myWalletAddress = myKey.getPublic('hex');
 
 const nodeAddress = uuidv1().split('-').join('');
