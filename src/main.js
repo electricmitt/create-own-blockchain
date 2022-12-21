@@ -8,37 +8,37 @@ const personalKey = ec.keyFromPrivate(
 
 const personalWalletAddress = personalKey.getPublic('hex');
 
-let misterChain = new Blockchain();
+let misterchain = new Blockchain();
 
 // Mine the first block
-misterChain.minePendingTransactions(personalWalletAddress);
+misterchain.minePendingTransactions(personalWalletAddress);
 
 // This creates a transaction and signs it with our key
 const tx1 = new Transaction(personalWalletAddress,
      ' 049628da01f64517db2835eda0e8f38b2f23be358ef9c7de8cc6180e0340f874490959eb1aa43fd930ae78b27a53ad10ce5d632d751fe8ec527b2f3d9c281636f3',
       100);
 tx1.signTransaction(personalKey);
-misterChain.addTransaction(tx1);
+misterchain.addTransaction(tx1);
 
 // Mines next block
-misterChain.minePendingTransactions(personalWalletAddress);
+misterchain.minePendingTransactions(personalWalletAddress);
 
 // Creates a second transaction
 const tx2 = new Transaction(personalWalletAddress, 'address1', 50);
 tx2.signTransaction(personalKey);
-misterChain.addTransaction(tx2);
+misterchain.addTransaction(tx2);
 
 // Mines next block
-misterChain.minePendingTransactions(personalWalletAddress);
+misterchain.minePendingTransactions(personalWalletAddress);
 
 console.log();
 console.log(
-    `balance of Matthews wallet is ${misterChain.getBalanceOfAddress(personalWalletAddress)}`
+    `balance of Matthews wallet is ${misterchain.getBalanceOfAddress(personalWalletAddress)}`
 );
 
 // Another layer of validation and security
-// misterChain.chain[1].transaction[0].amount = 10;
+// misterchain.chain[1].transaction[0].amount = 10;
 
 // Checks if the chain is valid
 console.log();
-console.log('is the Blockchain valid?', misterChain.isChainValid());
+console.log('is the Blockchain valid?', misterchain.isChainValid());
