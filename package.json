@@ -2,9 +2,8 @@
   "name": "create-blockchain-project",
   "version": "1.0.0",
   "description": "",
-  "main": "src/blockchain.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node -r esm src/blockchain.js",
     "test": "nyc mocha tests/*.js",
     "lint": "npm run lint:eslint && npm run lint:prettier",
     "lint:eslint": "eslint src/** tests/**",

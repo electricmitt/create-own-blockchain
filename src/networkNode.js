@@ -288,7 +288,7 @@ app.get('/address/:address', function(req, res) {
 
 // Use .sendFile instead of .json
 app.get('/block-explorer', function(req, res) {
-    res.sendFile('./block-explorer/index.html', { root: __dirname }) // says to llok for this file
+    res.sendFile('./frontend/blockchain.html', { root: __dirname }) // says to llok for this file
 });
 
 // need a variable for port #

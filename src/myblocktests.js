@@ -1,4 +1,5 @@
 const Blockchain = require('./blockchain');
+
 const misterchain = new Blockchain();
 
 const bc1 = {
