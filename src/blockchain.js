@@ -4,7 +4,7 @@ const { v1: uuidv1 } = require('uuid');
 
 function Blockchain() {
     this.chain = []; // this property is the meat of our chain will be stored. all of the blocks we create will be stored in this array as a chain.
-    this.newTransactions = []; // holds all of the new transactions before they are placed into the block and mined.
+    this.pendingTransactions = []; // holds all of the new transactions before they are placed into the block and mined.
     this.transaction = [];
 
     this.currentNodeUrl = currentNodeUrl;
@@ -20,13 +20,13 @@ Blockchain.prototype.createNewBlock = function(nonce, previousBlockHash, hash) {
     const newBlock = {
         index: this.chain.length + 1, // the block number
         timestamp: Date.now(), // gets the date
-        transactions: this.newTransactions, // gets all of the new transactions
+        transactions: this.pendingTransactions, // gets all of the new transactions
         nonce: nonce, // number with the POW method that proves legitimacy
         hash: hash, // the data from the current block...gets compressed into a single string
         previousBlockHash: previousBlockHash // data from previous block
     };
 
-    this.newTransactions = []; // clears out this array to start over for the next block
+    this.pendingTransactions = []; // clears out this array to start over for the next block
     this.chain.push(newBlock); // pushes data to the chain
 
     return newBlock;
@@ -84,19 +84,19 @@ Blockchain.prototype.createNewTransaction = function(amount, sender, recipient) 
 
     
 
-    //push into newTransaction into newTransactions array
-    // this.newTransactions.push(newTransaction);
+    //push into newTransaction into pendingTransactions array
+    // this.pendingTransactions.push(newTransaction);
 
     // return the # of the block that this transaction will be added to
     // return this.getLastBlock()['index'] + 1;
 
 
-Blockchain.prototype.addTransactionToPendingTransactions = function(transactionObj) {
-    this.newTransactions.push(transactionObj);
+Blockchain.prototype.addTransactionToNewTransactions = function(transactionObj) {
+    this.pendingTransactions.push(transactionObj);
     return this.getLastBlock()['index'] + 1;
 }
 
-// Use SHA256. Need to install.
+
 // Takes in block data and hashes the string. Pass data of a block into the method and will return hash
 Blockchain.prototype.hashBlock = function(previousBlockHash, currentBlockData, nonce) {
     // need to turn data into a string
