@@ -10,7 +10,7 @@ function Blockchain() {
     this.currentNodeUrl = currentNodeUrl;
     this.networkNodes = []; // allows each network to be aware of the other nodes
 
-    // Create the Genesis Block
+    // Creates our Genesis Block
     this.createNewBlock(100, '0', '0');
 };
 
@@ -106,14 +106,15 @@ Blockchain.prototype.hashBlock = function(previousBlockHash, currentBlockData, n
     return hash;
 }
 
-// Add proof of work method
+// Our Proof of Work method, which allow us to basically validate each block
 Blockchain.prototype.proofOfWork = function(previousBlockHash, currentBlockData) {
     let nonce = 0;
-    // need to run until the 1st 4 characters are '0000'.
+    // it will run until the 1st 4 characters of our has are '0000'.
     let hash = this.hashBlock(previousBlockHash, currentBlockData, nonce);
     while (hash.substring(0, 4) !== '0000') {
         nonce++;
         hash = this.hashBlock(previousBlockHash, currentBlockData, nonce);
+        // console.log(hash); // goes along with the proof of work test
     }
 
     return nonce;

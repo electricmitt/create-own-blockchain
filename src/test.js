@@ -55,4 +55,10 @@ const nonce = 100;
 
 console.log(misterchain.hashBlock(previousBlockHash, currentBlockData, nonce));
 
+// TEST OUR PROOF OF WORK METHOD
+console.log(misterchain.proofOfWork(previousBlockHash, currentBlockData));
+
+// TESTS OUR GENESIS BLOCK
+console.log(misterchain);
+
 
