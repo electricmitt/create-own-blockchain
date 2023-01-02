@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser');
 const Blockchain = require('./blockchain'); // imports blockchain constructor function
-const { v1: uuidv1 } = require('uuid'); // creates unique random string. Used as network's node address
+const { v1: uuidv1 } = require('uuid'); // creates a unique random string. Used as network's node address
 const port = process.argv[2]; // refers to the command in package.json > scripts > start
 const rp = require('request-promise');
 
@@ -21,21 +21,21 @@ const misterchain = new Blockchain();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// sends back the blockchain
+// sends back our entire blockchain
 app.get('/blockchain', function (req, res) {
     res.send(misterchain);
 })
 
-//end point to create new transaction on the blockchain
+// our end point to create a new transaction on our blockchain
 app.post('/transaction', function (req, res) {
     const newTransaction = req.body;
-    const blockIndex = misterchain.addTransactionToPendingTransactions(newTransaction);
+    const blockIndex = misterchain.addTransactionToNewTransactions(newTransaction);
     res.json({ note: `Transaction will be added in block ${blockIndex}.` });
 })
 
 // create and broadcast new transaction to all other nodes on the network
 app.post('/transaction/broadcast', function(req, res) {
-    const newTransaction = kevcoin.createNewTransaction(req.body.amount, req.body.sender, req.body.recipient)
+    const newTransaction = misterchain.createNewTransaction(req.body.amount, req.body.sender, req.body.recipient)
     misterchain.addTransactionToPendingTransactions(newTransaction);
 
     const requestPromises = [];
@@ -57,9 +57,10 @@ app.post('/transaction/broadcast', function(req, res) {
     });
 });
 
-// Will create/mine a new block by using PoW
+// Creates/mines a new block by using PoW
 //Performs calculations to create new block
 //////////////////////////////////////////////
+
 app.get('/mine', function (req, res) {
     const lastBlock = misterchain.getLastBlock();
     const previousBlockHash = lastBlock['hash'];
@@ -73,7 +74,7 @@ app.get('/mine', function (req, res) {
     const newBlock = misterchain.createNewBlock(nonce, previousBlockHash, blockHash);
 ///////////////////////////////////////
 
-    //misterchain.createNewTransaction(12.5, "00", nodeAddress); // Show mining reward
+    //misterchain.createNewTransaction(12.5, "00", nodeAddress); // Show mining reward, 12.5 is the real life mining reward for bitcoin. Sending the reward to the current Node that were on.
 
     
     // Broadcast out to all networks
@@ -259,6 +260,7 @@ app.get('/consensus', function(req, res) {
     });
 });
 
+// The backend of our block explorer
 
 app.get('/block/:blockHash', function(req, res) {
     const blockHash = req.params.blockHash;
@@ -288,7 +290,7 @@ app.get('/address/:address', function(req, res) {
 
 // Use .sendFile instead of .json
 app.get('/block-explorer', function(req, res) {
-    res.sendFile('./frontend/blockchain.html', { root: __dirname }) // says to llok for this file
+    res.sendFile('./frontend/blockexplorer.html', { root: __dirname }) // says to llok for this file
 });
 
 // need a variable for port #

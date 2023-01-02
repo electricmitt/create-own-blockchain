@@ -120,6 +120,7 @@ Blockchain.prototype.proofOfWork = function(previousBlockHash, currentBlockData)
     return nonce;
 }
 
+// our Consensys Alogorythim
 // Will validate other chains in the network when compared to the chain on the current node
 Blockchain.prototype.chainIsValid = function(blockchain) {
 	let validChain = true;
