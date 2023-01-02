@@ -2,7 +2,9 @@
 
 Open VS Code.
 
-Switch directories to blockchain. Type 'cd blockchain'
+cd blockchain
+
+npm install
 
 Open 3 terminals
 
