@@ -36,7 +36,7 @@ app.post('/transaction', function (req, res) {
 // create and broadcast new transaction to all other nodes on the network
 app.post('/transaction/broadcast', function(req, res) {
     const newTransaction = misterchain.createNewTransaction(req.body.amount, req.body.sender, req.body.recipient)
-    misterchain.addTransactionToPendingTransactions(newTransaction);
+    misterchain.addTransactionToNewTransactions(newTransaction);
 
     const requestPromises = [];
     misterchain.networkNodes.forEach(networkNodeUrl => {
