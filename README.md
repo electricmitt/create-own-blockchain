@@ -137,6 +137,8 @@ NOTE: The chain should be replaced with the new blockchain data that is in the o
 
 Go to localhost:3004/consensus and run it again. This will prompt a note stating that the chain has not been replaced. This is because there was not a need to replace this chain since it is now up to date.
 
+*************************************************************************************************
+
 BLOCK EXPLORER
 
 Open localhost:3001/block-explorer
